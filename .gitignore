@@ -1,0 +1,11 @@
+# Fichiers et dossiers généraux de Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Fichiers spécifiques à Django
+db.sqlite3
+/media/
+/staticfiles/
+settings.py

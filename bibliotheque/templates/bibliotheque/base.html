@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-Biblio - Bibliothèque Gratuite{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="{% url 'accueil' %}">
+                        <h1>📚 E-Biblio</h1>
+                    </a>
+                </div>
+
+                <nav class="nav">
+                    <ul>
+                        <li><a href="{% url 'accueil' %}">Accueil</a></li>
+                        <li><a href="{% url 'catalogue' %}">Catalogue</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'ajouter_livre' %}">Ajouter un livre</a></li>
+                            <li><a href="{% url 'favoris' %}">Mes favoris</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+
+                <div class="auth-buttons">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'profil' %}" class="btn btn-outline">👤 {{ user.username }}</a>
+                        <a href="{% url 'deconnexion' %}" class="btn btn-primary">Déconnexion</a>
+                    {% else %}
+                        <a href="{% url 'connexion' %}" class="btn btn-outline">Connexion</a>
+                        <a href="{% url 'inscription' %}" class="btn btn-primary">Inscription</a>
+                    {% endif %}
+                </div>
+
+                <!-- Menu mobile -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation mobile -->
+    <div class="mobile-nav" id="mobileNav">
+        <ul>
+            <li><a href="{% url 'accueil' %}">Accueil</a></li>
+            <li><a href="{% url 'catalogue' %}">Catalogue</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'ajouter_livre' %}">Ajouter un livre</a></li>
+                <li><a href="{% url 'favoris' %}">Mes favoris</a></li>
+                <li><a href="{% url 'profil' %}">Mon profil</a></li>
+                <li><a href="{% url 'deconnexion' %}">Déconnexion</a></li>
+            {% else %}
+                <li><a href="{% url 'connexion' %}">Connexion</a></li>
+                <li><a href="{% url 'inscription' %}">Inscription</a></li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="message message-{{ message.tags }}">
+                    {{ message }}
+                    <button class="message-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Contenu principal -->
+    <main class="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>À propos</h3>
+                    <p>E-Biblio est une bibliothèque numérique gratuite permettant à tous d'accéder et de partager des livres librement.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Liens rapides</h3>
+                    <ul>
+                        <li><a href="{% url 'accueil' %}">Accueil</a></li>
+                        <li><a href="{% url 'catalogue' %}">Catalogue</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'ajouter_livre' %}">Ajouter un livre</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Email : contact@ebiblio.ci</p>
+                    <p>Abidjan, Côte d'Ivoire</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025-2026 E-Biblio. Le Savoir pour Tous - Partageons la Connaissance.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

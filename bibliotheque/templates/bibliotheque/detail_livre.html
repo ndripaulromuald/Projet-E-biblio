@@ -1,0 +1,84 @@
+{% extends 'bibliotheque/base.html' %}
+
+{% block title %}{{ livre.titre }} - E-Biblio{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="book-detail">
+        <div class="book-detail-cover">
+            {% if livre.couverture %}
+                <img src="{{ livre.couverture.url }}" alt="{{ livre.titre }}">
+            {% else %}
+                <div class="book-cover-large book-cover-default">
+                    <span>📚</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="book-detail-info">
+            <h1 class="book-detail-title">{{ livre.titre }}</h1>
+            <p class="book-detail-author">Par {{ livre.auteur }}</p>
+            
+            <div class="book-detail-meta">
+                <span class="book-category-badge">{{ livre.get_categorie_display }}</span>
+                <span class="book-date">Ajouté le {{ livre.date_ajout|date:"d/m/Y" }}</span>
+                <span class="book-user">Par {{ livre.ajouté_par.username }}</span>
+            </div>
+
+            <div class="book-stats-detail">
+                <div class="stat-item">
+                    <span class="stat-icon">📖</span>
+                    <span class="stat-value">{{ livre.nombre_lectures }}</span>
+                    <span class="stat-label">Lecture(s)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">⬇️</span>
+                    <span class="stat-value">{{ livre.nombre_telechargements }}</span>
+                    <span class="stat-label">Téléchargement(s)</span>
+                </div>
+            </div>
+
+            <div class="book-description">
+                <h3>Description</h3>
+                <p>{{ livre.description|linebreaks }}</p>
+            </div>
+
+            <div class="book-actions">
+                <a href="{% url 'lire_livre' livre.pk %}" class="btn btn-primary btn-lg">
+                    📖 Lire en ligne
+                </a>
+                <a href="{% url 'telecharger_livre' livre.pk %}" class="btn btn-secondary btn-lg">
+                    ⬇️ Télécharger PDF
+                </a>
+                
+                {% if user.is_authenticated %}
+                    {% if est_favori %}
+                        <a href="{% url 'retirer_favori' livre.pk %}" class="btn btn-outline">
+                            💔 Retirer des favoris
+                        </a>
+                    {% else %}
+                        <a href="{% url 'ajouter_favori' livre.pk %}" class="btn btn-outline">
+                            ❤️ Ajouter aux favoris
+                        </a>
+                    {% endif %}
+                {% endif %}
+
+                {% if user == livre.ajouté_par %}
+                    <div class="owner-actions">
+                        <a href="{% url 'modifier_livre' livre.pk %}" class="btn btn-outline">
+                            ✏️ Modifier
+                        </a>
+                        <a href="{% url 'supprimer_livre' livre.pk %}" class="btn btn-danger">
+                            🗑️ Supprimer
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="{% url 'catalogue' %}">← Retour au catalogue</a>
+    </div>
+</div>
+{% endblock %}

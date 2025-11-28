@@ -1,0 +1,140 @@
+{% extends 'bibliotheque/base.html' %}
+
+{% block title %}Accueil - E-Biblio{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <h1 class="hero-title">Bienvenue sur E-Biblio</h1>
+        <p class="hero-subtitle">La bibliothèque gratuite pour tous. Lisez, téléchargez et partagez des livres librement.</p>
+        
+        <div class="search-bar">
+            <form action="{% url 'catalogue' %}" method="get">
+                <input type="text" name="q" placeholder="Rechercher un livre ou un auteur..." class="search-input">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Derniers livres ajoutés -->
+    <section class="section">
+        <h2 class="section-title">📖 Derniers livres ajoutés</h2>
+        
+        {% if derniers_livres %}
+            <div class="books-grid">
+                {% for livre in derniers_livres %}
+                    <div class="book-card">
+                        <a href="{% url 'detail_livre' livre.pk %}">
+                            {% if livre.couverture %}
+                                <img src="{{ livre.couverture.url }}" alt="{{ livre.titre }}" class="book-cover">
+                            {% else %}
+                                <div class="book-cover book-cover-default">
+                                    <span>📚</span>
+                                </div>
+                            {% endif %}
+                            <div class="book-info">
+                                <h3 class="book-title">{{ livre.titre }}</h3>
+                                <p class="book-author">{{ livre.auteur }}</p>
+                                <span class="book-category">{{ livre.get_categorie_display }}</span>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-books">Aucun livre disponible pour le moment. Soyez le premier à partager un livre !</p>
+        {% endif %}
+        
+        <div class="section-footer">
+            <a href="{% url 'catalogue' %}" class="btn btn-outline">Voir tous les livres →</a>
+        </div>
+    </section>
+
+    <!-- Livres les plus téléchargés -->
+    <section class="section">
+        <h2 class="section-title">🔥 Les plus téléchargés</h2>
+        
+        {% if plus_telecharges %}
+            <div class="books-grid">
+                {% for livre in plus_telecharges %}
+                    <div class="book-card">
+                        <a href="{% url 'detail_livre' livre.pk %}">
+                            {% if livre.couverture %}
+                                <img src="{{ livre.couverture.url }}" alt="{{ livre.titre }}" class="book-cover">
+                            {% else %}
+                                <div class="book-cover book-cover-default">
+                                    <span>📚</span>
+                                </div>
+                            {% endif %}
+                            <div class="book-info">
+                                <h3 class="book-title">{{ livre.titre }}</h3>
+                                <p class="book-author">{{ livre.auteur }}</p>
+                                <div class="book-stats">
+                                    <span>⬇️ {{ livre.nombre_telechargements }}</span>
+                                    <span class="book-category">{{ livre.get_categorie_display }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-books">Aucun livre téléchargé pour le moment.</p>
+        {% endif %}
+    </section>
+
+    <!-- Catégories -->
+    <section class="section">
+        <h2 class="section-title">🗂️ Explorer par catégorie</h2>
+        
+        <div class="categories-grid">
+            <a href="{% url 'catalogue' %}?categorie=roman" class="category-card">
+                <span class="category-icon">📖</span>
+                <h3>Roman</h3>
+            </a>
+            <a href="{% url 'catalogue' %}?categorie=science" class="category-card">
+                <span class="category-icon">🔬</span>
+                <h3>Science</h3>
+            </a>
+            <a href="{% url 'catalogue' %}?categorie=histoire" class="category-card">
+                <span class="category-icon">📜</span>
+                <h3>Histoire</h3>
+            </a>
+            <a href="{% url 'catalogue' %}?categorie=education" class="category-card">
+                <span class="category-icon">🎓</span>
+                <h3>Éducation</h3>
+            </a>
+            <a href="{% url 'catalogue' %}?categorie=technologie" class="category-card">
+                <span class="category-icon">💻</span>
+                <h3>Technologie</h3>
+            </a>
+            <a href="{% url 'catalogue' %}?categorie=culture" class="category-card">
+                <span class="category-icon">🌍</span>
+                <h3>Culture Africaine</h3>
+            </a>
+            <a href="{% url 'catalogue' %}?categorie=religion" class="category-card">
+                <span class="category-icon">🕌</span>
+                <h3>Religion</h3>
+            </a>
+            <a href="{% url 'catalogue' %}?categorie=autre" class="category-card">
+                <span class="category-icon">📚</span>
+                <h3>Autre</h3>
+            </a>
+        </div>
+    </section>
+
+    <!-- Call to action -->
+    {% if not user.is_authenticated %}
+    <section class="cta-section">
+        <h2>Rejoignez notre communauté !</h2>
+        <p>Inscrivez-vous gratuitement pour partager vos livres et créer votre bibliothèque personnelle.</p>
+        <div class="cta-buttons">
+            <a href="{% url 'inscription' %}" class="btn btn-primary btn-lg">S'inscrire gratuitement</a>
+            <a href="{% url 'connexion' %}" class="btn btn-outline btn-lg">Se connecter</a>
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

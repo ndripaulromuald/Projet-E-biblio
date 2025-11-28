@@ -1,0 +1,67 @@
+{% extends 'bibliotheque/base.html' %}
+
+{% block title %}Catalogue - E-Biblio{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>📚 Catalogue de livres</h1>
+        <p>{{ livres.count }} livre(s) disponible(s)</p>
+    </div>
+
+    <!-- Barre de recherche et filtres -->
+    <div class="catalogue-filters">
+        <form method="get" class="search-form">
+            <input type="text" name="q" value="{{ query }}" placeholder="Rechercher un livre..." class="search-input">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
+
+        <div class="categories-filter">
+            <a href="{% url 'catalogue' %}" class="filter-btn {% if not categorie_active %}active{% endif %}">
+                Toutes les catégories
+            </a>
+            {% for code, nom in categories %}
+                <a href="{% url 'catalogue' %}?categorie={{ code }}" 
+                   class="filter-btn {% if categorie_active == code %}active{% endif %}">
+                    {{ nom }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Liste des livres -->
+    {% if livres %}
+        <div class="books-grid">
+            {% for livre in livres %}
+                <div class="book-card">
+                    <a href="{% url 'detail_livre' livre.pk %}">
+                        {% if livre.couverture %}
+                            <img src="{{ livre.couverture.url }}" alt="{{ livre.titre }}" class="book-cover">
+                        {% else %}
+                            <div class="book-cover book-cover-default">
+                                <span>📚</span>
+                            </div>
+                        {% endif %}
+                        <div class="book-info">
+                            <h3 class="book-title">{{ livre.titre }}</h3>
+                            <p class="book-author">{{ livre.auteur }}</p>
+                            <div class="book-stats">
+                                <span>📖 {{ livre.nombre_lectures }} lecture(s)</span>
+                                <span>⬇️ {{ livre.nombre_telechargements }}</span>
+                            </div>
+                            <span class="book-category">{{ livre.get_categorie_display }}</span>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-results">
+            <p>😕 Aucun livre trouvé.</p>
+            {% if query or categorie_active %}
+                <a href="{% url 'catalogue' %}" class="btn btn-outline">Voir tous les livres</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

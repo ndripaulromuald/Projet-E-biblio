@@ -1,0 +1,70 @@
+{% extends 'bibliotheque/base.html' %}
+
+{% block title %}Modifier : {{ livre.titre }} - E-Biblio{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h1>✏️ Modifier le livre</h1>
+
+        <form method="post" enctype="multipart/form-data" class="book-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.titre.id_for_label }}">Titre *</label>
+                {{ form.titre }}
+                {% if form.titre.errors %}
+                    <div class="form-error">{{ form.titre.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.auteur.id_for_label }}">Auteur *</label>
+                {{ form.auteur }}
+                {% if form.auteur.errors %}
+                    <div class="form-error">{{ form.auteur.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.categorie.id_for_label }}">Catégorie *</label>
+                {{ form.categorie }}
+                {% if form.categorie.errors %}
+                    <div class="form-error">{{ form.categorie.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Description *</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="form-error">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.fichier_pdf.id_for_label }}">Fichier PDF</label>
+                {{ form.fichier_pdf }}
+                {% if form.fichier_pdf.errors %}
+                    <div class="form-error">{{ form.fichier_pdf.errors }}</div>
+                {% endif %}
+                <small class="form-help">Laissez vide pour conserver le fichier actuel</small>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.couverture.id_for_label }}">Image de couverture</label>
+                {{ form.couverture }}
+                {% if form.couverture.errors %}
+                    <div class="form-error">{{ form.couverture.errors }}</div>
+                {% endif %}
+                <small class="form-help">Laissez vide pour conserver l'image actuelle</small>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'detail_livre' livre.pk %}" class="btn btn-outline">Annuler</a>
+                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

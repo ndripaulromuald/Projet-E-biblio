@@ -1,0 +1,72 @@
+{% extends 'bibliotheque/base.html' %}
+
+{% block title %}Ajouter un livre - E-Biblio{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h1>📤 Partager un livre</h1>
+        <p class="form-description">Partagez vos livres avec la communauté. Tous les champs marqués d'un * sont obligatoires.</p>
+
+        <form method="post" enctype="multipart/form-data" class="book-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.titre.id_for_label }}">Titre *</label>
+                {{ form.titre }}
+                {% if form.titre.errors %}
+                    <div class="form-error">{{ form.titre.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.auteur.id_for_label }}">Auteur *</label>
+                {{ form.auteur }}
+                {% if form.auteur.errors %}
+                    <div class="form-error">{{ form.auteur.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.categorie.id_for_label }}">Catégorie *</label>
+                {{ form.categorie }}
+                {% if form.categorie.errors %}
+                    <div class="form-error">{{ form.categorie.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Description *</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="form-error">{{ form.description.errors }}</div>
+                {% endif %}
+                <small class="form-help">Décrivez brièvement le contenu du livre</small>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.fichier_pdf.id_for_label }}">Fichier PDF * (max 50 MB)</label>
+                {{ form.fichier_pdf }}
+                {% if form.fichier_pdf.errors %}
+                    <div class="form-error">{{ form.fichier_pdf.errors }}</div>
+                {% endif %}
+                <small class="form-help">Format accepté : PDF uniquement</small>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.couverture.id_for_label }}">Image de couverture (optionnel)</label>
+                {{ form.couverture }}
+                {% if form.couverture.errors %}
+                    <div class="form-error">{{ form.couverture.errors }}</div>
+                {% endif %}
+                <small class="form-help">Formats acceptés : JPG, PNG</small>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'catalogue' %}" class="btn btn-outline">Annuler</a>
+                <button type="submit" class="btn btn-primary">Partager le livre</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

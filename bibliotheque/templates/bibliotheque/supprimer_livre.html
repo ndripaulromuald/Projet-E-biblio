@@ -1,0 +1,42 @@
+<!-- profil.html -->
+
+
+
+<!-- mes_livres.html -->
+
+
+<!-- favoris.html -->
+
+
+
+<!-- modifier_livre.html -->
+
+
+<!-- supprimer_livre.html -->
+{% extends 'bibliotheque/base.html' %}
+
+{% block title %}Supprimer : {{ livre.titre }} - E-Biblio{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="delete-container">
+        <h1>🗑️ Supprimer le livre</h1>
+        <p class="warning">⚠️ Êtes-vous sûr de vouloir supprimer ce livre ?</p>
+
+        <div class="delete-book-info">
+            <h2>{{ livre.titre }}</h2>
+            <p>Par {{ livre.auteur }}</p>
+        </div>
+
+        <p class="warning-text">Cette action est irréversible. Le livre sera définitivement supprimé.</p>
+
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <a href="{% url 'detail_livre' livre.pk %}" class="btn btn-outline">Annuler</a>
+                <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

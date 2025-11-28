@@ -1,0 +1,42 @@
+{% extends 'bibliotheque/base.html' %}
+
+{% block title %}Mes favoris - E-Biblio{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>❤️ Mes favoris</h1>
+    </div>
+
+    {% if favoris %}
+        <div class="books-grid">
+            {% for favori in favoris %}
+                <div class="book-card">
+                    <a href="{% url 'detail_livre' favori.livre.pk %}">
+                        {% if favori.livre.couverture %}
+                            <img src="{{ favori.livre.couverture.url }}" alt="{{ favori.livre.titre }}" class="book-cover">
+                        {% else %}
+                            <div class="book-cover book-cover-default">
+                                <span>📚</span>
+                            </div>
+                        {% endif %}
+                        <div class="book-info">
+                            <h3 class="book-title">{{ favori.livre.titre }}</h3>
+                            <p class="book-author">{{ favori.livre.auteur }}</p>
+                            <span class="book-category">{{ favori.livre.get_categorie_display }}</span>
+                        </div>
+                    </a>
+                    <div class="book-card-actions">
+                        <a href="{% url 'retirer_favori' favori.livre.pk %}" class="btn btn-sm btn-outline">💔 Retirer</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-results">
+            <p>😕 Vous n'avez pas encore de favoris.</p>
+            <a href="{% url 'catalogue' %}" class="btn btn-primary">Explorer le catalogue</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -5,7 +5,13 @@
 {% block content %}
 <div class="container">
     <div class="page-header">
-        <h1>📚 Catalogue de livres</h1>
+        <h1>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.5rem;">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+            Catalogue de livres
+        </h1>
         <p>{{ livres.count }} livre(s) disponible(s)</p>
     </div>
 
@@ -13,11 +19,25 @@
     <div class="catalogue-filters">
         <form method="get" class="search-form">
             <input type="text" name="q" value="{{ query }}" placeholder="Rechercher un livre..." class="search-input">
-            <button type="submit" class="btn btn-primary">Rechercher</button>
+            <button type="submit" class="btn btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                Rechercher
+            </button>
         </form>
 
         <div class="categories-filter">
             <a href="{% url 'catalogue' %}" class="filter-btn {% if not categorie_active %}active{% endif %}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; vertical-align: middle;">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
                 Toutes les catégories
             </a>
             {% for code, nom in categories %}
@@ -38,16 +58,27 @@
                         {% if livre.couverture %}
                             <img src="{{ livre.couverture.url }}" alt="{{ livre.titre }}" class="book-cover">
                         {% else %}
-                            <div class="book-cover book-cover-default">
-                                <span>📚</span>
-                            </div>
+                            <div class="book-cover book-cover-default"></div>
                         {% endif %}
                         <div class="book-info">
                             <h3 class="book-title">{{ livre.titre }}</h3>
                             <p class="book-author">{{ livre.auteur }}</p>
                             <div class="book-stats">
-                                <span>📖 {{ livre.nombre_lectures }} lecture(s)</span>
-                                <span>⬇️ {{ livre.nombre_telechargements }}</span>
+                                <span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;">
+                                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                                    </svg>
+                                    {{ livre.nombre_lectures }}
+                                </span>
+                                <span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    {{ livre.nombre_telechargements }}
+                                </span>
                             </div>
                             <span class="book-category">{{ livre.get_categorie_display }}</span>
                         </div>
@@ -57,7 +88,13 @@
         </div>
     {% else %}
         <div class="no-results">
-            <p>😕 Aucun livre trouvé.</p>
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 1rem; display: block; color: #cbd5e1;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+                <line x1="11" y1="8" x2="11" y2="14"></line>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+            <p>Aucun livre trouvé.</p>
             {% if query or categorie_active %}
                 <a href="{% url 'catalogue' %}" class="btn btn-outline">Voir tous les livres</a>
             {% endif %}

@@ -9,9 +9,7 @@
             {% if livre.couverture %}
                 <img src="{{ livre.couverture.url }}" alt="{{ livre.titre }}">
             {% else %}
-                <div class="book-cover-large book-cover-default">
-                    <span>📚</span>
-                </div>
+                <div class="book-cover-large book-cover-default"></div>
             {% endif %}
         </div>
 
@@ -21,18 +19,39 @@
             
             <div class="book-detail-meta">
                 <span class="book-category-badge">{{ livre.get_categorie_display }}</span>
-                <span class="book-date">Ajouté le {{ livre.date_ajout|date:"d/m/Y" }}</span>
-                <span class="book-user">Par {{ livre.ajouté_par.username }}</span>
+                <span class="book-date">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Ajouté le {{ livre.date_ajout|date:"d/m/Y" }}
+                </span>
+                <span class="book-user">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Par {{ livre.ajouté_par.username }}
+                </span>
             </div>
 
             <div class="book-stats-detail">
                 <div class="stat-item">
-                    <span class="stat-icon">📖</span>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="stat-icon">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
                     <span class="stat-value">{{ livre.nombre_lectures }}</span>
                     <span class="stat-label">Lecture(s)</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-icon">⬇️</span>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="stat-icon">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
                     <span class="stat-value">{{ livre.nombre_telechargements }}</span>
                     <span class="stat-label">Téléchargement(s)</span>
                 </div>
@@ -45,20 +64,35 @@
 
             <div class="book-actions">
                 <a href="{% url 'lire_livre' livre.pk %}" class="btn btn-primary btn-lg">
-                    📖 Lire en ligne
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    Lire en ligne
                 </a>
                 <a href="{% url 'telecharger_livre' livre.pk %}" class="btn btn-secondary btn-lg">
-                    ⬇️ Télécharger PDF
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Télécharger PDF
                 </a>
                 
                 {% if user.is_authenticated %}
                     {% if est_favori %}
                         <a href="{% url 'retirer_favori' livre.pk %}" class="btn btn-outline">
-                            💔 Retirer des favoris
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            Retirer des favoris
                         </a>
                     {% else %}
                         <a href="{% url 'ajouter_favori' livre.pk %}" class="btn btn-outline">
-                            ❤️ Ajouter aux favoris
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            Ajouter aux favoris
                         </a>
                     {% endif %}
                 {% endif %}
@@ -66,10 +100,20 @@
                 {% if user == livre.ajouté_par %}
                     <div class="owner-actions">
                         <a href="{% url 'modifier_livre' livre.pk %}" class="btn btn-outline">
-                            ✏️ Modifier
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Modifier
                         </a>
                         <a href="{% url 'supprimer_livre' livre.pk %}" class="btn btn-danger">
-                            🗑️ Supprimer
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                            Supprimer
                         </a>
                     </div>
                 {% endif %}
@@ -78,7 +122,13 @@
     </div>
 
     <div class="back-link">
-        <a href="{% url 'catalogue' %}">← Retour au catalogue</a>
+        <a href="{% url 'catalogue' %}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Retour au catalogue
+        </a>
     </div>
 </div>
 {% endblock %}

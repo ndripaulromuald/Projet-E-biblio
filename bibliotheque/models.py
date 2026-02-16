@@ -57,6 +57,33 @@ class Livre(models.Model):
         """Retourne le nom complet de la catégorie"""
         return dict(self.CATEGORIES).get(self.categorie, self.categorie)
 
+    # Dans la classe Livre, ajoute ces méthodes :
+
+    def note_moyenne(self):
+        """Calcule la note moyenne du livre"""
+        avis_list = self.avis.all()
+        if avis_list.exists():
+            total = sum([a.note for a in avis_list])
+            return round(total / avis_list.count(), 1)
+        return 0
+
+    def nombre_avis(self):
+        """Retourne le nombre d'avis"""
+        return self.avis.count()
+
+    def get_etoiles_moyenne(self):
+        """Retourne les étoiles de la note moyenne"""
+        moyenne = self.note_moyenne()
+        etoiles_pleines = int(moyenne)
+        demi_etoile = 1 if (moyenne - etoiles_pleines) >= 0.5 else 0
+        etoiles_vides = 5 - etoiles_pleines - demi_etoile
+
+        html = '★' * etoiles_pleines
+        if demi_etoile:
+            html += '⯨'
+        html += '☆' * etoiles_vides
+        return html
+
 
 class Favori(models.Model):
     """Modèle représentant les favoris d'un utilisateur"""
@@ -81,3 +108,68 @@ class Favori(models.Model):
 
     def __str__(self):
         return f"{self.utilisateur.username} - {self.livre.titre}"
+
+
+class Avis(models.Model):
+    """Avis et notes sur les livres"""
+
+    NOTES = [
+        (1, '1 étoile - Très décevant'),
+        (2, '2 étoiles - Décevant'),
+        (3, '3 étoiles - Correct'),
+        (4, '4 étoiles - Très bien'),
+        (5, '5 étoiles - Excellent'),
+    ]
+
+    livre = models.ForeignKey(
+        Livre,
+        on_delete=models.CASCADE,
+        related_name='avis',
+        verbose_name="Livre"
+    )
+    utilisateur = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Utilisateur"
+    )
+    note = models.IntegerField(
+        choices=NOTES,
+        verbose_name="Note"
+    )
+    commentaire = models.TextField(
+        verbose_name="Commentaire",
+        help_text="Partagez votre avis sur ce livre"
+    )
+    date_creation = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Date de création"
+    )
+    date_modification = models.DateTimeField(
+        auto_now=True,
+        verbose_name="Date de modification"
+    )
+    likes = models.ManyToManyField(
+        User,
+        related_name='avis_likes',
+        blank=True,
+        verbose_name="Likes"
+    )
+
+    class Meta:
+        unique_together = ['livre', 'utilisateur']
+        ordering = ['-date_creation']
+        verbose_name = "Avis"
+        verbose_name_plural = "Avis"
+
+    def __str__(self):
+        return f"{self.utilisateur.username} - {self.livre.titre} ({self.note}/5)"
+
+    def nombre_likes(self):
+        """Retourne le nombre de likes"""
+        return self.likes.count()
+
+    def get_etoiles(self):
+        """Retourne les étoiles en HTML"""
+        etoiles_pleines = '★' * self.note
+        etoiles_vides = '☆' * (5 - self.note)
+        return etoiles_pleines + etoiles_vides

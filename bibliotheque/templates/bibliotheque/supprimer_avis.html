@@ -1,0 +1,35 @@
+{% extends 'bibliotheque/base.html' %}
+
+{% block title %}Supprimer mon avis - E-Biblio{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="delete-container">
+        <h1>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Supprimer mon avis
+        </h1>
+        
+        <p class="warning">⚠️ Êtes-vous sûr de vouloir supprimer votre avis ?</p>
+        
+        <div class="delete-book-info">
+            <h2>{{ avis.livre.titre }}</h2>
+            <p>Note : {{ avis.get_etoiles|safe }}</p>
+            <p class="avis-commentaire">{{ avis.commentaire }}</p>
+        </div>
+
+        <p class="warning-text">Cette action est irréversible.</p>
+
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <a href="{% url 'detail_livre' avis.livre.pk %}" class="btn btn-outline">Annuler</a>
+                <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

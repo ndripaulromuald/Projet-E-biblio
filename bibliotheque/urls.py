@@ -27,4 +27,9 @@ urlpatterns = [
     path('inscription/', views.inscription, name='inscription'),
     path('connexion/', views.connexion, name='connexion'),
     path('deconnexion/', views.deconnexion, name='deconnexion'),
+
+    # Avis (ajoute ces lignes)
+    path('livre/<int:pk>/ajouter-avis/', views.ajouter_avis, name='ajouter_avis'),
+    path('avis/<int:pk>/like/', views.liker_avis, name='liker_avis'),
+    path('avis/<int:pk>/supprimer/', views.supprimer_avis, name='supprimer_avis'),
 ]

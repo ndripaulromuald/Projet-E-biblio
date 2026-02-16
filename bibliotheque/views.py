@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.db.models import Q
 from django.http import FileResponse, Http404
-from .models import Livre, Favori
-from .forms import LivreForm, CustomUserCreationForm
+from .models import Livre, Favori, Avis  # ← AJOUTE Avis
+from .forms import LivreForm, CustomUserCreationForm, AvisForm  # ← AJOUTE AvisForm
 
 
 def accueil(request):
@@ -51,7 +51,7 @@ def catalogue(request):
     return render(request, 'bibliotheque/catalogue.html', context)
 
 
-def detail_livre(request, pk):
+#def detail_livre(request, pk):
     """Page de détail d'un livre"""
     livre = get_object_or_404(Livre, pk=pk)
     est_favori = False
@@ -65,6 +65,36 @@ def detail_livre(request, pk):
     }
     return render(request, 'bibliotheque/detail_livre.html', context)
 
+
+def detail_livre(request, pk):
+    """Page de détail d'un livre"""
+    try:
+        livre = get_object_or_404(Livre, pk=pk)
+        est_favori = False
+        mon_avis = None
+
+        if request.user.is_authenticated:
+            est_favori = Favori.objects.filter(utilisateur=request.user, livre=livre).exists()
+            mon_avis = Avis.objects.filter(utilisateur=request.user, livre=livre).first()
+
+        # Récupérer tous les avis SAUF celui de l'utilisateur connecté
+        if mon_avis:
+            autres_avis = livre.avis.exclude(pk=mon_avis.pk)
+        else:
+            autres_avis = livre.avis.all()
+
+        context = {
+            'livre': livre,
+            'est_favori': est_favori,
+            'mon_avis': mon_avis,
+            'autres_avis': autres_avis,
+        }
+        return render(request, 'bibliotheque/detail_livre.html', context)
+    except Exception as e:
+        print(f"Erreur dans detail_livre: {e}")
+        messages.error(request, "Erreur lors du chargement du livre.")
+        return redirect('catalogue')
+    
 
 def lire_livre(request, pk):
     """Page pour lire un livre en ligne"""
@@ -252,3 +282,88 @@ def deconnexion(request):
     logout(request)
     messages.success(request, 'Vous êtes déconnecté.')
     return redirect('accueil')
+
+
+@login_required
+def ajouter_avis(request, pk):
+    """Ajouter ou modifier un avis sur un livre"""
+    try:
+        livre = get_object_or_404(Livre, pk=pk)
+
+        # Vérifier si l'utilisateur a déjà un avis
+        avis_existant = Avis.objects.filter(livre=livre, utilisateur=request.user).first()
+
+        if request.method == 'POST':
+            if avis_existant:
+                form = AvisForm(request.POST, instance=avis_existant)
+                message = 'Votre avis a été modifié avec succès !'
+            else:
+                form = AvisForm(request.POST)
+                message = 'Merci pour votre avis !'
+
+            if form.is_valid():
+                avis = form.save(commit=False)
+                avis.livre = livre
+                avis.utilisateur = request.user
+                avis.save()
+                messages.success(request, message)
+                return redirect('detail_livre', pk=pk)
+        else:
+            if avis_existant:
+                form = AvisForm(instance=avis_existant)
+            else:
+                form = AvisForm()
+
+        context = {
+            'form': form,
+            'livre': livre,
+            'avis_existant': avis_existant,
+        }
+        return render(request, 'bibliotheque/ajouter_avis.html', context)
+
+    except Exception as e:
+        print(f"Erreur dans ajouter_avis: {e}")
+        messages.error(request, "Erreur lors de l'ajout de l'avis.")
+        return redirect('detail_livre', pk=pk)
+
+
+@login_required
+def liker_avis(request, pk):
+    """Liker ou retirer le like d'un avis"""
+    try:
+        avis = get_object_or_404(Avis, pk=pk)
+
+        if request.user in avis.likes.all():
+            avis.likes.remove(request.user)
+        else:
+            avis.likes.add(request.user)
+
+        return redirect('detail_livre', pk=avis.livre.pk)
+
+    except Exception as e:
+        print(f"Erreur dans liker_avis: {e}")
+        messages.error(request, "Erreur lors du like.")
+        return redirect('catalogue')
+
+
+@login_required
+def supprimer_avis(request, pk):
+    """Supprimer son propre avis"""
+    try:
+        avis = get_object_or_404(Avis, pk=pk, utilisateur=request.user)
+        livre_pk = avis.livre.pk
+
+        if request.method == 'POST':
+            avis.delete()
+            messages.success(request, 'Votre avis a été supprimé.')
+            return redirect('detail_livre', pk=livre_pk)
+
+        context = {
+            'avis': avis,
+        }
+        return render(request, 'bibliotheque/supprimer_avis.html', context)
+
+    except Exception as e:
+        print(f"Erreur dans supprimer_avis: {e}")
+        messages.error(request, "Erreur lors de la suppression.")
+        return redirect('catalogue')

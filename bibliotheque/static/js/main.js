@@ -700,6 +700,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Compteur de caractères pour commentaire
+const commentaireInput = document.querySelector('textarea[name="commentaire"]');
+if (commentaireInput) {
+    const charCount = document.querySelector('.char-count');
+    commentaireInput.addEventListener('input', function() {
+        if (charCount) {
+            charCount.textContent = `${this.value.length} / 500 caractères`;
+        }
+    });
+}
 // ========================================
 // LOG DE SUCCÈS
 // ========================================

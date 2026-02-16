@@ -1,0 +1,131 @@
+{% extends 'bibliotheque/base.html' %}
+
+{% block title %}
+    {% if avis_existant %}Modifier mon avis{% else %}Donner mon avis{% endif %} - {{ livre.titre }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h1>
+                {% if avis_existant %}
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Modifier mon avis
+                {% else %}
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    Donner mon avis
+                {% endif %}
+            </h1>
+            <p class="form-description">Sur le livre : <strong>{{ livre.titre }}</strong> de {{ livre.auteur }}</p>
+        </div>
+
+        <form method="post" class="avis-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Votre note *</label>
+
+                <div class="rating-input">
+                    <label class="rating-option">
+                        <input type="radio" name="note" value="1"
+                               {% if form.note.value == 1 or form.note.value == '1' %}checked{% endif %}
+                               required>
+                        <span class="rating-stars">★☆☆☆☆</span>
+                        <span class="rating-label">1 étoile - Très décevant</span>
+                    </label>
+
+                    <label class="rating-option">
+                        <input type="radio" name="note" value="2"
+                               {% if form.note.value == 2 or form.note.value == '2' %}checked{% endif %}
+                               required>
+                        <span class="rating-stars">★★☆☆☆</span>
+                        <span class="rating-label">2 étoiles - Décevant</span>
+                    </label>
+
+                    <label class="rating-option">
+                        <input type="radio" name="note" value="3"
+                               {% if form.note.value == 3 or form.note.value == '3' %}checked{% endif %}
+                               required>
+                        <span class="rating-stars">★★★☆☆</span>
+                        <span class="rating-label">3 étoiles - Correct</span>
+                    </label>
+
+                    <label class="rating-option">
+                        <input type="radio" name="note" value="4"
+                               {% if form.note.value == 4 or form.note.value == '4' %}checked{% endif %}
+                               required>
+                        <span class="rating-stars">★★★★☆</span>
+                        <span class="rating-label">4 étoiles - Très bien</span>
+                    </label>
+
+                    <label class="rating-option">
+                        <input type="radio" name="note" value="5"
+                               {% if form.note.value == 5 or form.note.value == '5' %}checked{% endif %}
+                               required>
+                        <span class="rating-stars">★★★★★</span>
+                        <span class="rating-label">5 étoiles - Excellent</span>
+                    </label>
+                </div>
+
+                {% if form.note.errors %}
+                    <div class="form-error">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {{ form.note.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.commentaire.id_for_label }}">Votre commentaire *</label>
+                <textarea name="commentaire" id="{{ form.commentaire.id_for_label }}"
+                          rows="5" required
+                          placeholder="Partagez votre expérience de lecture avec les autres utilisateurs">{{ form.commentaire.value|default:'' }}</textarea>
+                {% if form.commentaire.errors %}
+                    <div class="form-error">{{ form.commentaire.errors }}</div>
+                {% endif %}
+                <small class="form-help">Partagez votre expérience de lecture avec les autres utilisateurs</small>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'detail_livre' livre.pk %}" class="btn btn-outline">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Annuler
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    {% if avis_existant %}Modifier mon avis{% else %}Publier mon avis{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="back-link">
+        <a href="{% url 'detail_livre' livre.pk %}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Retour au livre
+        </a>
+    </div>
+</div>
+{% endblock %}

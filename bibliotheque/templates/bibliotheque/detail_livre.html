@@ -4,6 +4,9 @@
 
 {% block content %}
 <div class="container">
+    <!-- ===================================
+         DÉTAIL DU LIVRE
+         =================================== -->
     <div class="book-detail">
         <div class="book-detail-cover">
             {% if livre.couverture %}
@@ -121,6 +124,179 @@
         </div>
     </div>
 
+    <!-- ===================================
+         SÉPARATEUR ÉLÉGANT
+         =================================== -->
+    <div class="section-divider"></div>
+
+    <!-- ===================================
+         SECTION AVIS ET NOTES
+         =================================== -->
+    <section class="avis-section">
+        <!-- Header avec titre et statistiques -->
+        <div class="avis-header">
+            <h2>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+                Avis des lecteurs
+            </h2>
+            
+            <div class="avis-stats">
+                {% if livre.nombre_avis > 0 %}
+                    <div class="note-globale">
+                        <div class="note-chiffre">{{ livre.note_moyenne }}</div>
+                        <div>
+                            <div class="note-etoiles">{{ livre.get_etoiles_moyenne|safe }}</div>
+                            <div class="note-count">{{ livre.nombre_avis }} avis</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="no-avis">Aucun avis pour le moment. Soyez le premier à donner votre avis !</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Mon avis (si l'utilisateur en a déjà un) -->
+        {% if user.is_authenticated %}
+            {% if mon_avis %}
+                <div class="mon-avis-card">
+                    <div class="avis-card-header">
+                        <h3>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                            </svg>
+                            Mon avis
+                        </h3>
+                        <div class="avis-actions">
+                            <a href="{% url 'ajouter_avis' livre.pk %}" class="btn-action" title="Modifier">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </a>
+                            <a href="{% url 'supprimer_avis' mon_avis.pk %}" class="btn-action btn-danger" title="Supprimer">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="avis-note">{{ mon_avis.get_etoiles|safe }}</div>
+                    <p class="avis-commentaire">{{ mon_avis.commentaire|linebreaks }}</p>
+                    <div class="avis-footer">
+                        <span class="avis-date">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            {{ mon_avis.date_creation|date:"d/m/Y à H:i" }}
+                        </span>
+                        <span class="avis-likes">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            {{ mon_avis.nombre_likes }}
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Call-to-action pour donner un avis -->
+                <div class="avis-cta">
+                    <a href="{% url 'ajouter_avis' livre.pk %}" class="btn btn-primary btn-lg">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                        Donner mon avis sur ce livre
+                    </a>
+                </div>
+            {% endif %}
+        {% else %}
+            <!-- Message pour les non-connectés -->
+            <div class="avis-login-prompt">
+                <p>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <a href="{% url 'connexion' %}?next={{ request.path }}">Connectez-vous</a> pour donner votre avis sur ce livre.
+                </p>
+            </div>
+        {% endif %}
+
+        <!-- Liste des autres avis -->
+        {% if autres_avis %}
+            <div class="avis-liste">
+                <h3>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Avis de la communauté
+                </h3>
+                
+                {% for avis in autres_avis %}
+                    <div class="avis-card">
+                        <div class="avis-card-header">
+                            <div class="avis-user">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <strong>{{ avis.utilisateur.username }}</strong>
+                            </div>
+                            <div class="avis-note">{{ avis.get_etoiles|safe }}</div>
+                        </div>
+                        
+                        <p class="avis-commentaire">{{ avis.commentaire|linebreaks }}</p>
+                        
+                        <div class="avis-footer">
+                            <span class="avis-date">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                {{ avis.date_creation|date:"d/m/Y" }}
+                            </span>
+                            
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'liker_avis' avis.pk %}" class="btn-like">
+                                    {% if user in avis.likes.all %}
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                    {% else %}
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                    {% endif %}
+                                    <span>{{ avis.nombre_likes }}</span>
+                                </a>
+                            {% else %}
+                                <span class="avis-likes">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                    {{ avis.nombre_likes }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- ===================================
+         LIEN RETOUR
+         =================================== -->
     <div class="back-link">
         <a href="{% url 'catalogue' %}">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">

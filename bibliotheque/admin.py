@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import Livre, Favori, Avis  # ← Ajoute Avis
+from .models import Livre, Favori, Avis
 
-# Personnalisation du titre de l'admin
 admin.site.site_header = "E-Biblio Administration"
 admin.site.site_title = "E-Biblio Admin"
 admin.site.index_title = "Tableau de bord"
@@ -32,7 +31,6 @@ class FavoriAdmin(admin.ModelAdmin):
     list_filter = ['date_ajout']
     search_fields = ['utilisateur__username', 'livre__titre']
 
-# À la fin du fichier, ajoute :
 @admin.register(Avis)
 class AvisAdmin(admin.ModelAdmin):
     list_display = ['livre', 'utilisateur', 'note', 'date_creation', 'nombre_likes']

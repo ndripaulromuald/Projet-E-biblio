@@ -1,9 +1,3 @@
-/**
- * E-BIBLIO - JAVASCRIPT CORRIGÉ
- * Sans cursor personnalisé, optimisé et performant
- * @version 2.1
- */
-
 // ========================================
 // CONFIGURATION GLOBALE
 // ========================================

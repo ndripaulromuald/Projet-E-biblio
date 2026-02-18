@@ -5,12 +5,11 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.db.models import Q
 from django.http import FileResponse, Http404
-from .models import Livre, Favori, Avis  # ← AJOUTE Avis
-from .forms import LivreForm, CustomUserCreationForm, AvisForm  # ← AJOUTE AvisForm
+from .models import Livre, Favori, Avis
+from .forms import LivreForm, CustomUserCreationForm, AvisForm
 
 
 def accueil(request):
-    """Page d'accueil avec les derniers livres et les plus téléchargés"""
     derniers_livres = Livre.objects.all()[:6]
     plus_telecharges = Livre.objects.order_by('-nombre_telechargements')[:6]
 
@@ -22,10 +21,8 @@ def accueil(request):
 
 
 def catalogue(request):
-    """Page catalogue avec recherche et filtres"""
     livres = Livre.objects.all()
 
-    # Recherche
     query = request.GET.get('q')
     if query:
         livres = livres.filter(
@@ -34,12 +31,10 @@ def catalogue(request):
             Q(description__icontains=query)
         )
 
-    # Filtre par catégorie
     categorie = request.GET.get('categorie')
     if categorie:
         livres = livres.filter(categorie=categorie)
 
-    # Récupérer toutes les catégories pour le filtre
     categories = Livre.CATEGORIES
 
     context = {
@@ -51,23 +46,7 @@ def catalogue(request):
     return render(request, 'bibliotheque/catalogue.html', context)
 
 
-#def detail_livre(request, pk):
-    """Page de détail d'un livre"""
-    livre = get_object_or_404(Livre, pk=pk)
-    est_favori = False
-
-    if request.user.is_authenticated:
-        est_favori = Favori.objects.filter(utilisateur=request.user, livre=livre).exists()
-
-    context = {
-        'livre': livre,
-        'est_favori': est_favori,
-    }
-    return render(request, 'bibliotheque/detail_livre.html', context)
-
-
 def detail_livre(request, pk):
-    """Page de détail d'un livre"""
     try:
         livre = get_object_or_404(Livre, pk=pk)
         est_favori = False
@@ -77,7 +56,6 @@ def detail_livre(request, pk):
             est_favori = Favori.objects.filter(utilisateur=request.user, livre=livre).exists()
             mon_avis = Avis.objects.filter(utilisateur=request.user, livre=livre).first()
 
-        # Récupérer tous les avis SAUF celui de l'utilisateur connecté
         if mon_avis:
             autres_avis = livre.avis.exclude(pk=mon_avis.pk)
         else:
@@ -90,6 +68,7 @@ def detail_livre(request, pk):
             'autres_avis': autres_avis,
         }
         return render(request, 'bibliotheque/detail_livre.html', context)
+
     except Exception as e:
         print(f"Erreur dans detail_livre: {e}")
         messages.error(request, "Erreur lors du chargement du livre.")
@@ -97,10 +76,8 @@ def detail_livre(request, pk):
     
 
 def lire_livre(request, pk):
-    """Page pour lire un livre en ligne"""
     livre = get_object_or_404(Livre, pk=pk)
 
-    # Incrémenter le compteur de lectures
     livre.nombre_lectures += 1
     livre.save()
 
@@ -111,10 +88,8 @@ def lire_livre(request, pk):
 
 
 def telecharger_livre(request, pk):
-    """Télécharger un livre PDF"""
     livre = get_object_or_404(Livre, pk=pk)
 
-    # Incrémenter le compteur de téléchargements
     livre.nombre_telechargements += 1
     livre.save()
 
@@ -126,7 +101,6 @@ def telecharger_livre(request, pk):
 
 @login_required
 def ajouter_livre(request):
-    """Page pour ajouter un livre"""
     if request.method == 'POST':
         form = LivreForm(request.POST, request.FILES)
         if form.is_valid():
@@ -146,7 +120,6 @@ def ajouter_livre(request):
 
 @login_required
 def mes_livres(request):
-    """Page listant les livres ajoutés par l'utilisateur"""
     livres = Livre.objects.filter(ajoute_par=request.user)
 
     context = {
@@ -157,7 +130,6 @@ def mes_livres(request):
 
 @login_required
 def modifier_livre(request, pk):
-    """Page pour modifier un livre"""
     livre = get_object_or_404(Livre, pk=pk, ajoute_par=request.user)
 
     if request.method == 'POST':
@@ -178,7 +150,6 @@ def modifier_livre(request, pk):
 
 @login_required
 def supprimer_livre(request, pk):
-    """Supprimer un livre"""
     livre = get_object_or_404(Livre, pk=pk, ajoute_par=request.user)
 
     if request.method == 'POST':
@@ -194,7 +165,6 @@ def supprimer_livre(request, pk):
 
 @login_required
 def favoris(request):
-    """Page listant les favoris de l'utilisateur"""
     favoris = Favori.objects.filter(utilisateur=request.user)
 
     context = {
@@ -205,7 +175,6 @@ def favoris(request):
 
 @login_required
 def ajouter_favori(request, pk):
-    """Ajouter un livre aux favoris"""
     livre = get_object_or_404(Livre, pk=pk)
 
     Favori.objects.get_or_create(utilisateur=request.user, livre=livre)
@@ -216,7 +185,6 @@ def ajouter_favori(request, pk):
 
 @login_required
 def retirer_favori(request, pk):
-    """Retirer un livre des favoris"""
     livre = get_object_or_404(Livre, pk=pk)
 
     Favori.objects.filter(utilisateur=request.user, livre=livre).delete()
@@ -227,7 +195,6 @@ def retirer_favori(request, pk):
 
 @login_required
 def profil(request):
-    """Page de profil de l'utilisateur"""
     livres_ajoutes = Livre.objects.filter(ajoute_par=request.user).count()
     favoris_count = Favori.objects.filter(utilisateur=request.user).count()
 
@@ -239,7 +206,6 @@ def profil(request):
 
 
 def inscription(request):
-    """Page d'inscription"""
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -257,7 +223,6 @@ def inscription(request):
 
 
 def connexion(request):
-    """Page de connexion"""
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -278,7 +243,6 @@ def connexion(request):
 
 
 def deconnexion(request):
-    """Déconnexion de l'utilisateur"""
     logout(request)
     messages.success(request, 'Vous êtes déconnecté.')
     return redirect('accueil')
@@ -286,11 +250,9 @@ def deconnexion(request):
 
 @login_required
 def ajouter_avis(request, pk):
-    """Ajouter ou modifier un avis sur un livre"""
     try:
         livre = get_object_or_404(Livre, pk=pk)
 
-        # Vérifier si l'utilisateur a déjà un avis
         avis_existant = Avis.objects.filter(livre=livre, utilisateur=request.user).first()
 
         if request.method == 'POST':
@@ -329,7 +291,6 @@ def ajouter_avis(request, pk):
 
 @login_required
 def liker_avis(request, pk):
-    """Liker ou retirer le like d'un avis"""
     try:
         avis = get_object_or_404(Avis, pk=pk)
 
@@ -348,7 +309,6 @@ def liker_avis(request, pk):
 
 @login_required
 def supprimer_avis(request, pk):
-    """Supprimer son propre avis"""
     try:
         avis = get_object_or_404(Avis, pk=pk, utilisateur=request.user)
         livre_pk = avis.livre.pk

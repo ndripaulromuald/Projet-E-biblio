@@ -4,7 +4,6 @@ from django.core.validators import FileExtensionValidator
 
 
 class Livre(models.Model):
-    """Modèle représentant un livre dans la bibliothèque"""
 
     CATEGORIES = [
         ('roman', 'Roman'),
@@ -54,13 +53,9 @@ class Livre(models.Model):
         return self.titre
 
     def get_categorie_display_custom(self):
-        """Retourne le nom complet de la catégorie"""
         return dict(self.CATEGORIES).get(self.categorie, self.categorie)
 
-    # Dans la classe Livre, ajoute ces méthodes :
-
     def note_moyenne(self):
-        """Calcule la note moyenne du livre"""
         avis_list = self.avis.all()
         if avis_list.exists():
             total = sum([a.note for a in avis_list])
@@ -68,11 +63,9 @@ class Livre(models.Model):
         return 0
 
     def nombre_avis(self):
-        """Retourne le nombre d'avis"""
         return self.avis.count()
 
     def get_etoiles_moyenne(self):
-        """Retourne les étoiles de la note moyenne"""
         moyenne = self.note_moyenne()
         etoiles_pleines = int(moyenne)
         demi_etoile = 1 if (moyenne - etoiles_pleines) >= 0.5 else 0
@@ -86,7 +79,6 @@ class Livre(models.Model):
 
 
 class Favori(models.Model):
-    """Modèle représentant les favoris d'un utilisateur"""
 
     utilisateur = models.ForeignKey(
         User,
@@ -111,14 +103,13 @@ class Favori(models.Model):
 
 
 class Avis(models.Model):
-    """Avis et notes sur les livres"""
 
     NOTES = [
-        (1, '1 étoile - Très décevant'),
-        (2, '2 étoiles - Décevant'),
-        (3, '3 étoiles - Correct'),
-        (4, '4 étoiles - Très bien'),
-        (5, '5 étoiles - Excellent'),
+        (1, 'Très décevant'),
+        (2, 'Décevant'),
+        (3, 'Pas mal'),
+        (4, 'Très bien'),
+        (5, 'Excellent'),
     ]
 
     livre = models.ForeignKey(
@@ -165,11 +156,9 @@ class Avis(models.Model):
         return f"{self.utilisateur.username} - {self.livre.titre} ({self.note}/5)"
 
     def nombre_likes(self):
-        """Retourne le nombre de likes"""
         return self.likes.count()
 
     def get_etoiles(self):
-        """Retourne les étoiles en HTML"""
         etoiles_pleines = '★' * self.note
         etoiles_vides = '☆' * (5 - self.note)
         return etoiles_pleines + etoiles_vides

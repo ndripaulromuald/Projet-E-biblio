@@ -1,13 +1,10 @@
-/* ========================================
-   E-BIBLIO - DESIGN ULTRA-MODERNE
-   CSS Avancé avec Animations & Effets Visuels
-   ======================================== */
+
 
 /* ========================================
-   VARIABLES CSS MODERNES
+   VARIABLES CSS
    ======================================== */
 :root {
-    /* Palette de couleurs moderne - Dégradés dynamiques */
+    /* Palette de couleurs - Dégradés dynamiques */
     --primary-start: #667eea;
     --primary-end: #764ba2;
     --secondary-start: #f093fb;
@@ -37,7 +34,7 @@
     --warning: #f59e0b;
     --info: #06b6d4;
 
-    /* Typographie moderne */
+    /* Typographie */
     --font-display: 'Poppins', -apple-system, system-ui, sans-serif;
     --font-body: 'Inter', -apple-system, system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -85,7 +82,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800;900&display=swap');
 
 /* ========================================
-   RESET & BASE MODERNE
+   RESET & BASE
    ======================================== */
 *,
 *::before,
@@ -226,7 +223,7 @@ body::before {
     opacity: 0.5;
 }
 
-/* Navigation avec effets modernes */
+/* Navigation avec effets */
 .nav ul {
     display: flex;
     gap: var(--space-2);
@@ -284,7 +281,7 @@ body::before {
 }
 
 /* ========================================
-   BOUTONS ULTRA-MODERNES
+   BOUTONS
    ======================================== */
 .btn {
     display: inline-flex;
@@ -421,7 +418,7 @@ body::before {
 }
 
 /* ========================================
-   HERO SECTION ÉPOUSTOUFLANTE
+   HERO SECTION
    ======================================== */
 .hero {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -499,7 +496,7 @@ body::before {
 }
 
 /* ========================================
-   SEARCH BAR MODERNE
+   SEARCH BAR
    ======================================== */
 .search-bar {
     max-width: 800px;
@@ -541,7 +538,7 @@ body::before {
 }
 
 /* ========================================
-   CARTES DE LIVRES ULTRA-MODERNES
+   CARTES DE LIVRES
    ======================================== */
 .books-grid {
     display: grid;
@@ -730,7 +727,7 @@ body::before {
 }
 
 /* ========================================
-   CATÉGORIES MODERNES
+   CATÉGORIES
    ======================================== */
 .categories-grid {
     display: grid;
@@ -768,7 +765,7 @@ body::before {
 }
 
 /* ========================================
-   CATALOGUE FILTERS (CORRIGÉ)
+   CATALOGUE FILTERS
    ======================================== */
 .catalogue-filters {
     margin-bottom: var(--space-8);
@@ -915,7 +912,7 @@ body::before {
     }
 }
 /* ========================================
-   FORMULAIRES MODERNES
+   FORMULAIRES
    ======================================== */
 .form-container,
 .auth-box {
@@ -1326,7 +1323,7 @@ body::before {
 }
 
 /* ========================================
-   FOOTER MODERNE
+   FOOTER
    ======================================== */
 .footer {
     background: linear-gradient(135deg, var(--dark) 0%, var(--gray-900) 100%);
@@ -1402,7 +1399,7 @@ body::before {
 }
 
 /* ========================================
-   MENU MOBILE MODERNE
+   MENU MOBILE
    ======================================== */
 .mobile-menu-btn {
     display: none;
@@ -1620,8 +1617,7 @@ body::before {
     }
 }
 /* ========================================
-   SYSTÈME D'AVIS - ULTRA-MODERNE
-   Design cohérent avec le reste du site
+   AVIS
    ======================================== */
 
 /* Séparateur élégant */
@@ -2113,7 +2109,7 @@ body::before {
 }
 
 /* ========================================
-   FORMULAIRE D'AVIS - ULTRA-MODERNE
+   FORMULAIRE D'AVIS
    ======================================== */
 .avis-form {
     max-width: 800px;
